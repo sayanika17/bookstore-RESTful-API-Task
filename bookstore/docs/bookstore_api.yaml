@@ -1,0 +1,134 @@
+openapi: 3.0.0
+info:
+title: Bookstore API
+description: API for managing a bookstore inventory
+version: 1.0.0
+servers:
+url: http://localhost:3000
+description: Local server
+components:
+securitySchemes:
+basicAuth:
+type: http
+scheme: basic
+schemas:
+Book:
+type: object
+required:
+title
+author
+isbn
+price
+quantity
+properties:
+title:
+type: string
+example: "Atomic Habits"
+author:
+type: string
+example: "James Clear"
+isbn:
+type: string
+example: "9780143127550"
+price:
+type: number
+format: float
+example: 19.99
+quantity:
+type: integer
+example: 10
+security:
+basicAuth: []
+paths:
+/books:
+get:
+summary: Get all books
+tags: [Books]
+responses:
+'200':
+description: List of books
+content:
+application/json:
+schema:
+type: object
+properties:
+books:
+type: array
+items:
+$ref: '#/components/schemas/Book'
+post:
+summary: Add a new book
+tags: [Books]
+security:
+basicAuth: []
+requestBody:
+required: true
+content:
+application/json:
+schema:
+$ref: '#/components/schemas/Book'
+responses:
+'201':
+description: Book added successfully
+'400':
+description: Invalid input
+/books/{isbn}:
+get:
+summary: Get a book by ISBN
+tags: [Books]
+parameters:
+name: isbn
+in: path
+required: true
+schema:
+type: string
+responses:
+'200':
+description: Book found
+content:
+application/json:
+schema:
+type: object
+properties:
+book:
+$ref: '#/components/schemas/Book'
+'404':
+description: Book not found
+put:
+summary: Update a book by ISBN
+tags: [Books]
+security:
+basicAuth: []
+parameters:
+name: isbn
+in: path
+required: true
+schema:
+type: string
+requestBody:
+required: true
+content:
+application/json:
+schema:
+$ref: '#/components/schemas/Book'
+responses:
+'200':
+description: Book updated successfully
+'404':
+description: Book not found
+delete:
+summary: Delete a book by ISBN
+tags: [Books]
+security:
+basicAuth: []
+parameters:
+name: isbn
+in: path
+required: true
+schema:
+type: string
+responses:
+'200':
+description: Book deleted successfully
+'404':
+description: Book not found
